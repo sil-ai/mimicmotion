@@ -3,7 +3,7 @@ channels:
   - pytorch
   - nvidia
 dependencies:
-  - python=3.11
+  - python=3.10
   - pytorch=2.0.1
   - torchvision=0.15.2
   - pytorch-cuda=11.7
@@ -14,3 +14,4 @@ dependencies:
     - decord==0.6.0
     - einops
     - omegaconf
+    - clearml
