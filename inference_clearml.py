@@ -22,16 +22,17 @@ from mimicmotion.pipelines.pipeline_mimicmotion import MimicMotionPipeline
 from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
-
+from dotenv import load_dotenv
 def set_up_media_logging():
     logger = Logger.current_logger()
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
-Task.add_requirements('requirements.txt')
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
+load_dotenv()
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+task.add_requirements('boto3','')
 task.set_base_docker(
                     docker_image="alejandroquinterosil/clearml-image:mimicmotion",
                     docker_arguments=[
