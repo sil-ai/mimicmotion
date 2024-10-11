@@ -15,3 +15,4 @@ dependencies:
     - einops
     - omegaconf
     - clearml
+    - boto3
