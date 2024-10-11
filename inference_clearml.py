@@ -28,7 +28,7 @@ def set_up_media_logging():
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
 Task.add_requirements('requirements.txt')
-task = Task.init(project_name="MimicMotion", task_name="Inference v2")
+task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
