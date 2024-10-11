@@ -25,7 +25,7 @@ from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 
 def set_up_media_logging():
     logger = Logger.current_logger()
-    logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion/media-reporting/{task.id}")
+    logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
 
 task = Task.init(project_name="MimicMotion", task_name="Inference v2")
