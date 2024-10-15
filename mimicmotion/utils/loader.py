@@ -43,7 +43,7 @@ def create_pipeline(infer_config, device):
     from huggingface_hub import login
 
     token = os.getenv('HUGGINGFACE_TOKEN')
-    login(token=token)
+    login(token)
 
     mimicmotion_models = MimicMotionModel(infer_config.base_model_path)
     mimicmotion_models.load_state_dict(torch.load(infer_config.ckpt_path, map_location="cpu"), strict=False)
