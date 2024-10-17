@@ -22,26 +22,32 @@ from mimicmotion.pipelines.pipeline_mimicmotion import MimicMotionPipeline
 from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
+from huggingface_hub import login
 from dotenv import load_dotenv
+
+load_dotenv()
+
 def set_up_media_logging():
     logger = Logger.current_logger()
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
+
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
-load_dotenv()
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-task.add_requirements('boto3','')
+token = os.getenv('HUGGINGFACE_TOKEN')
 task.set_base_docker(
                     docker_image="alejandroquinterosil/clearml-image:mimicmotion",
                     docker_arguments=[
                         f"--env AWS_REGION={aws_region}",
                         f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
-                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}"])
+                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
+                        f"--env HUGGINGFACE_TOKEN={token}"])
 task.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 
+login(token)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)

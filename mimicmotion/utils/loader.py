@@ -39,11 +39,6 @@ def create_pipeline(infer_config, device):
         infer_config (str):
         device (str or torch.device): "cpu" or "cuda:{device_id}"
     """
-    import os
-    from huggingface_hub import login
-
-    token = os.getenv('HUGGINGFACE_TOKEN')
-    login(token)
 
     mimicmotion_models = MimicMotionModel(infer_config.base_model_path)
     mimicmotion_models.load_state_dict(torch.load(infer_config.ckpt_path, map_location="cpu"), strict=False)
