@@ -22,7 +22,6 @@ from mimicmotion.pipelines.pipeline_mimicmotion import MimicMotionPipeline
 from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
-from huggingface_hub import login
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -44,13 +43,8 @@ task.set_base_docker(
                         f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
                         f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
                         f"--env HF_TOKEN={token}"],
-                    docker_setup_bash_script=["huggingface-cli login --token $HF_TOKEN --add-to-git-credential"],
-
                     )
 task.execute_remotely(queue_name="jobs_urgent", exit_process=True)
-
-
-login(token)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)

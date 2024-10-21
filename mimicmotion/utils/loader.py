@@ -9,7 +9,6 @@ from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
 from ..modules.unet import UNetSpatioTemporalConditionModel
 from ..modules.pose_net import PoseNet
 from ..pipelines.pipeline_mimicmotion import MimicMotionPipeline
-from huggingface_hub import HfFolder
 import os
 
 logger = logging.getLogger(__name__)
