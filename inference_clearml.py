@@ -43,7 +43,10 @@ task.set_base_docker(
                         f"--env AWS_REGION={aws_region}",
                         f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
                         f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
-                        f"--env HUGGINGFACE_TOKEN={token}"])
+                        f"--env HF_TOKEN={token}"],
+                    docker_setup_bash_script=["huggingface-cli login --token $HF_TOKEN --add-to-git-credential"],
+
+                    )
 task.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 

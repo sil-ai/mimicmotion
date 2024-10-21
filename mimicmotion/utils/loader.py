@@ -9,6 +9,16 @@ from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
 from ..modules.unet import UNetSpatioTemporalConditionModel
 from ..modules.pose_net import PoseNet
 from ..pipelines.pipeline_mimicmotion import MimicMotionPipeline
+from huggingface_hub import HfFolder
+import os
+# Get the token from the environment variable
+token = os.getenv("HUGGINGFACE_TOKEN")
+
+if token is None:
+    raise ValueError("HUGGINGFACE_TOKEN environment variable is not set")
+
+# Save the token locally
+HfFolder.save_token(token)
 
 logger = logging.getLogger(__name__)
 
