@@ -20,8 +20,9 @@ class MimicMotionModel(torch.nn.Module):
             base_model_path (str): pretrained svd model path
         """
         super().__init__()
+        HF_TOKEN = os.getenv('HF_TOKEN')
         self.unet = UNetSpatioTemporalConditionModel.from_config(
-            UNetSpatioTemporalConditionModel.load_config(base_model_path, subfolder="unet"))
+            UNetSpatioTemporalConditionModel.load_config(base_model_path, subfolder="unet", token=HF_TOKEN))
         self.vae = AutoencoderKLTemporalDecoder.from_pretrained(
             base_model_path, subfolder="vae", torch_dtype=torch.float16, variant="fp16")
         self.image_encoder = CLIPVisionModelWithProjection.from_pretrained(
