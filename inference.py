@@ -70,7 +70,7 @@ def run_pipeline(pipeline: MimicMotionPipeline, image_pixels, pose_pixels, devic
         tile_size=task_config.num_frames, tile_overlap=task_config.frames_overlap,
         height=pose_pixels.shape[-2], width=pose_pixels.shape[-1], fps=7,
         noise_aug_strength=task_config.noise_aug_strength, num_inference_steps=task_config.num_inference_steps,
-        generator=generator, min_guidance_scale=task_config.guidance_scale, 
+        generator=generator, min_guidance_scale=task_config.guidance_scale,
         max_guidance_scale=task_config.guidance_scale, decode_chunk_size=8, output_type="pt", device=device
     ).frames.cpu()
     video_frames = (frames * 255.0).to(torch.uint8)
@@ -87,24 +87,24 @@ def main(args):
     if not args.no_use_float16 :
         torch.set_default_dtype(torch.float16)
 
-    infer_config = OmegaConf.load(args.inference_config)
-    pipeline = create_pipeline(infer_config, device)
+     = OmegaConf.load(args.inference_config)
+    pipeline = create_pipeline(, device)
 
-    for task in infer_config.test_case:
+    for task in .test_case:
         ############################################## Pre-process data ##############################################
         pose_pixels, image_pixels = preprocess(
-            task.ref_video_path, task.ref_image_path, 
+            task.ref_video_path, task.ref_image_path,
             resolution=task.resolution, sample_stride=task.sample_stride
         )
         ########################################### Run MimicMotion pipeline ###########################################
         _video_frames = run_pipeline(
-            pipeline, 
-            image_pixels, pose_pixels, 
+            pipeline,
+            image_pixels, pose_pixels,
             device, task
         )
         ################################### save results to output folder. ###########################################
         save_to_mp4(
-            _video_frames, 
+            _video_frames,
             f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
             f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
             fps=task.fps,
@@ -119,7 +119,7 @@ def set_logger(log_file=None, log_level=logging.INFO):
     logger.addHandler(log_handler)
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--log_file", type=str, default=None)
     parser.add_argument("--inference_config", type=str, default="configs/test.yaml") #ToDo

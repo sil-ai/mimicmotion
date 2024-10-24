@@ -5,7 +5,7 @@ from clearml import StorageManager, Dataset, Task
 
 # Add arguments dataset_path, bucket_name, and dataset_name
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataset_path", type=str, default="./models/SVD/stable-video-diffusion-img2vid-xt-1-1")
+parser.add_argument("--dataset_path", type=str, default="./models/MimicMotion_1-1.pth")
 parser.add_argument("--bucket_name", type=str, default="sil-mimicmotion")
 parser.add_argument("--dataset_name", type=str, default="SVD-MimicMotion")
 args = parser.parse_args()
@@ -14,7 +14,7 @@ args = parser.parse_args()
 # Create a dataset with ClearML's Dataset class
 
 dataset = Dataset.create(
-    dataset_project="SVD MimicMotion",
+    dataset_project="MimicMotionPTH",
     dataset_name= f"{args.dataset_name}",
     output_uri=f"s3://{args.bucket_name}"
 )

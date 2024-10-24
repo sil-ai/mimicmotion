@@ -5,7 +5,7 @@ import math
 from omegaconf import OmegaConf
 from datetime import datetime
 from pathlib import Path
-from clearml import Task, Logger
+from clearml import Dataset, Task, Logger
 import numpy as np
 import torch.jit
 from torchvision.datasets.folder import pil_loader
@@ -31,6 +31,22 @@ def set_up_media_logging():
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
 
+def get_clearml_paths():
+    # Getting vits path
+    curr_dir = os.getcwd().split('/')
+    print("Current Directory: ", curr_dir)
+    mimic_path = '/'.join(curr_dir)
+
+    dataset = Dataset.get(dataset_id="509248cb8e664c02b9aadc1ac8529132")
+    path = dataset.get_mutable_local_copy(
+        target_folder="./models",
+        overwrite=True
+    )
+
+    print("PTH path: ", path)
+
+    return path
+
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
@@ -50,7 +66,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(m
 logger = logging.getLogger(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
+
 media_logger = set_up_media_logging()
+mimic_pth_path = get_clearml_paths()
 
 def preprocess(video_path, image_path, resolution=576, sample_stride=2):
     """preprocess ref image pose and video pose
