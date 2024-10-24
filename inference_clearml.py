@@ -66,13 +66,13 @@ def get_clearml_paths():
         config = yaml.safe_load(file)
 
     # Modify the YAML content
-    config['ckpt_path'] = f'{mimic_path + path_dw}'
+    config['ckpt_path'] = f'{path_dw}'
 
     # Save the updated YAML file
     with open('configs/test.yaml', 'w') as file:
         yaml.dump(config, file)
 
-    return mimic_path + path_pth, mimic_path + path_dw
+    return path_pth, path_dw
 
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
