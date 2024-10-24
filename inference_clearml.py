@@ -23,6 +23,9 @@ from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 from dotenv import load_dotenv
+import yaml
+
+
 
 load_dotenv()
 
@@ -55,12 +58,21 @@ def get_clearml_paths():
     # Imprimir el contenido del directorio
     print("Contenido del directorio DW path:", os.listdir(path_dw))
 
-
-
     print("PTH path: ", path_pth)
     print("DW path: ", path_dw)
 
-    return path_pth, path_dw
+    # Load the YAML file
+    with open('configs/test.yaml', 'r') as file:
+        config = yaml.safe_load(file)
+
+    # Modify the YAML content
+    config['ckpt_path'] = f'{mimic_path + path_dw}'
+
+    # Save the updated YAML file
+    with open('configs/test.yaml', 'w') as file:
+        yaml.dump(config, file)
+
+    return mimic_path + path_pth, mimic_path + path_dw
 
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
