@@ -66,7 +66,7 @@ def get_clearml_paths():
         config = yaml.safe_load(file)
 
     # Modify the YAML content
-    config['ckpt_path'] = f'{path_dw}'
+    config['ckpt_path'] = f'{path_dw + "/MimicMotion_1-1.pth"}'
 
     # Save the updated YAML file
     with open('configs/test.yaml', 'w') as file:
