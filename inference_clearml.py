@@ -37,11 +37,19 @@ def get_clearml_paths():
     print("Current Directory: ", curr_dir)
     mimic_path = '/'.join(curr_dir)
 
-    dataset = Dataset.get(dataset_id="509248cb8e664c02b9aadc1ac8529132")
-    path = dataset.get_mutable_local_copy(
+    dataset_pth = Dataset.get(dataset_id="509248cb8e664c02b9aadc1ac8529132")
+    path = dataset_pth.get_mutable_local_copy(
         target_folder="./models",
         overwrite=True
     )
+
+    dataset_dwpose = Dataset.get(dataset_id="ee8350bd69ba4d92a12150539dd2b670")
+    path = dataset_dwpose.get_mutable_local_copy(
+        target_folder="./models",
+        overwrite=True
+    )
+
+
 
     print("PTH path: ", path)
 
