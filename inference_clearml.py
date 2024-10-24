@@ -60,7 +60,7 @@ def get_clearml_paths():
     print("PTH path: ", path_pth)
     print("DW path: ", path_dw)
 
-    return path
+    return path_pth, path_dw
 
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
@@ -84,7 +84,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 media_logger = set_up_media_logging()
-mimic_pth_path = get_clearml_paths()
+path_pth, path_dw = get_clearml_paths()
 
 def preprocess(video_path, image_path, resolution=576, sample_stride=2):
     """preprocess ref image pose and video pose
