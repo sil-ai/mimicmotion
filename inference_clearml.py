@@ -35,44 +35,35 @@ def set_up_media_logging():
     return logger
 
 def get_clearml_paths():
+
+    # create outputs folder
+    os.makedirs("outputs", exist_ok=True)
     # Getting vits path
     curr_dir = os.getcwd().split('/')
     print("Current Directory: ", curr_dir)
     mimic_path = '/'.join(curr_dir)
 
-    dataset_pth = Dataset.get(dataset_id="509248cb8e664c02b9aadc1ac8529132")
-    path_pth = dataset_pth.get_mutable_local_copy(
-        target_folder="./models",
+    dataset = Dataset.get(dataset_id="47cf215eb8e54f099b21cc2d17f3460d")
+    models_path = dataset.get_mutable_local_copy(
+        target_folder="./",
         overwrite=True
     )
 
     # Imprimir el contenido del directorio
-    print("Contenido del directorio PTH path:", os.listdir(path_pth))
+    print("Models path content:", os.listdir(models_path))
 
-    dataset_dwpose = Dataset.get(dataset_id="ee8350bd69ba4d92a12150539dd2b670")
-    path_dw = dataset_dwpose.get_mutable_local_copy(
-        target_folder="./models",
-        overwrite=True
-    )
+    # # Load the YAML file
+    # with open('configs/test.yaml', 'r') as file:
+    #     config = yaml.safe_load(file)
 
-    # Imprimir el contenido del directorio
-    print("Contenido del directorio DW path:", os.listdir(path_dw))
+    # # Modify the YAML content
+    # config['ckpt_path'] = f'{path_dw + "/MimicMotion_1-1.pth"}'
 
-    print("PTH path: ", path_pth)
-    print("DW path: ", path_dw)
+    # # Save the updated YAML file
+    # with open('configs/test.yaml', 'w') as file:
+    #     yaml.dump(config, file)
 
-    # Load the YAML file
-    with open('configs/test.yaml', 'r') as file:
-        config = yaml.safe_load(file)
-
-    # Modify the YAML content
-    config['ckpt_path'] = f'{path_dw + "/MimicMotion_1-1.pth"}'
-
-    # Save the updated YAML file
-    with open('configs/test.yaml', 'w') as file:
-        yaml.dump(config, file)
-
-    return path_pth, path_dw
+    return mimic_path
 
 task = Task.init(project_name="MimicMotion", task_name="Inference v3")
 aws_region = os.getenv('AWS_REGION')
@@ -96,7 +87,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 media_logger = set_up_media_logging()
-path_pth, path_dw = get_clearml_paths()
+mimic_path = get_clearml_paths()
 
 def preprocess(video_path, image_path, resolution=576, sample_stride=2):
     """preprocess ref image pose and video pose
@@ -206,8 +197,11 @@ if __name__ == "__main__":
                         help="Whether use float16 to speed up inference",
     )
     args = parser.parse_args()
-
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    print("---------------------------------------------------------------")
+    print("Args: ", args)
+    print("---------------------------------------------------------------")
+    print(mimic_path)
+    Path(mimic_path + args.output_dir).mkdir(parents=False, exist_ok=True)
     set_logger(args.log_file \
                if args.log_file is not None else f"{args.output_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
