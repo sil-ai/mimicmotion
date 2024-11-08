@@ -66,7 +66,7 @@ task_clearml.set_base_docker(
                         f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
                         f"--env HF_TOKEN={token}"],
                     )
-task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True, clone_repo=True)
+task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
