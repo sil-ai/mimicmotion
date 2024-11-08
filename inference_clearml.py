@@ -50,7 +50,11 @@ def get_clearml_paths():
 
     return mimic_path
 
-task_clearml = Task.init(project_name="MimicMotion", task_name="Inference v3")
+task_clearml = Task.init(project_name="MimicMotion",
+                        task_name="Inference v3",
+                        repo="https://github.com/sil-ai/micmicmotion.git",
+                        branch="main"
+                        )
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -63,7 +67,7 @@ task_clearml.set_base_docker(
                         f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
                         f"--env HF_TOKEN={token}"],
                     )
-task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
+task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True, clone_repo=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
