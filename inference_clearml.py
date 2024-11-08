@@ -73,6 +73,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 media_logger = set_up_media_logging()
 mimic_path = get_clearml_paths()
 
+print(mimic_path)
+
 def preprocess(video_path, image_path, resolution=576, sample_stride=2):
     """preprocess ref image pose and video pose
 
