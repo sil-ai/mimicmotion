@@ -36,13 +36,6 @@ def set_up_media_logging():
 
 def get_clearml_paths():
 
-    # create outputs folder
-    os.makedirs("outputs", exist_ok=True)
-    # Getting vits path
-    curr_dir = os.getcwd().split('/')
-    print("Current Directory: ", curr_dir)
-    mimic_path = '/'.join(curr_dir)
-
     dataset = Dataset.get(dataset_id="47cf215eb8e54f099b21cc2d17f3460d")
     models_path = dataset.get_mutable_local_copy(
         target_folder="./",
@@ -52,16 +45,7 @@ def get_clearml_paths():
     # Imprimir el contenido del directorio
     print("Models path content:", os.listdir(models_path))
 
-    # # Load the YAML file
-    # with open('configs/test.yaml', 'r') as file:
-    #     config = yaml.safe_load(file)
-
-    # # Modify the YAML content
-    # config['ckpt_path'] = f'{path_dw + "/MimicMotion_1-1.pth"}'
-
-    # # Save the updated YAML file
-    # with open('configs/test.yaml', 'w') as file:
-    #     yaml.dump(config, file)
+    mimic_path = os.getcwd()
 
     return mimic_path
 
@@ -179,6 +163,7 @@ def main(args):
         )
 
 def set_logger(log_file=None, log_level=logging.INFO):
+
     log_handler = logging.FileHandler(log_file, "w")
     log_handler.setFormatter(
         logging.Formatter("[%(asctime)s][%(name)s][%(levelname)s]: %(message)s")
@@ -201,9 +186,10 @@ if __name__ == "__main__":
     print("Args: ", args)
     print("---------------------------------------------------------------")
     print(mimic_path)
-    Path(mimic_path + args.output_dir).mkdir(parents=False, exist_ok=True)
+    absolute_output_dir = mimic_path + "/" + args.output_dir
+    Path(absolute_output_dir).mkdir(parents=False, exist_ok=True)
     set_logger(args.log_file \
-               if args.log_file is not None else f"{args.output_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
+               if args.log_file is not None else f"{absolute_output_dir}{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
 

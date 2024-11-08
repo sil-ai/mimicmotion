@@ -87,10 +87,10 @@ def main(args):
     if not args.no_use_float16 :
         torch.set_default_dtype(torch.float16)
 
-     = OmegaConf.load(args.inference_config)
-    pipeline = create_pipeline(, device)
+    infer_config = OmegaConf.load(args.inference_config)
+    pipeline = create_pipeline(infer_config, device)
 
-    for task in .test_case:
+    for task in infer_config.test_case:
         ############################################## Pre-process data ##############################################
         pose_pixels, image_pixels = preprocess(
             task.ref_video_path, task.ref_image_path,
@@ -135,4 +135,3 @@ if __name__ == "__main__":
                if args.log_file is not None else f"{args.output_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
-
