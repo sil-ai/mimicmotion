@@ -27,7 +27,7 @@ pipe.set_default_execution_queue("jobs_urgent")
 
 pipe.add_step(
     name='Pipeline mimicmotion',
-    base_task_project='MimicMotion',
+    base_task_project='MimicMotion Project',
     base_task_name='Inference v3',
 )
 
