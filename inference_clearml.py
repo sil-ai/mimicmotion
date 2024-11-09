@@ -46,15 +46,15 @@ def get_clearml_paths():
     # Imprimir el contenido del directorio
     print("Models path content:", os.listdir(models_path))
 
-    print('This is a message.')
     mimic_path = os.getcwd()
 
     return mimic_path
 
-task_clearml = Task.init(project_name="MimicMotion", task_name="Inference v3")
-task_clearml.connect_configuration(
-    {"repository": "https://github.com/sil-ai/micmicmotion.git", "branch": "main"}
-)
+task_clearml = Task.init(
+            project_name="MimicMotion Project",
+            task_name="Inference v3"
+            )
+
 aws_region = os.getenv('AWS_REGION')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
