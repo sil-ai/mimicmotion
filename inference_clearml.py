@@ -26,8 +26,9 @@ from dotenv import load_dotenv
 import yaml
 
 
-
 load_dotenv()
+
+print(os.getcwd())
 
 def set_up_media_logging():
     logger = Logger.current_logger()
