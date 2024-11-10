@@ -61,11 +61,6 @@ aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 token = os.getenv('HUGGINGFACE_TOKEN')
 task_clearml.set_base_docker(
                     docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-                    docker_arguments=[
-                        f"--env AWS_REGION={aws_region}",
-                        f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
-                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
-                        f"--env HF_TOKEN={token}"],
                     )
 task_clearml.add_requirements("./requirements.txt")
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
