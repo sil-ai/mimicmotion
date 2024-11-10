@@ -39,15 +39,14 @@ def get_clearml_paths():
 
     dataset = Dataset.get(dataset_id="47cf215eb8e54f099b21cc2d17f3460d")
     models_path = dataset.get_mutable_local_copy(
-        target_folder="./",
+        target_folder="./models",
         overwrite=True
     )
 
     # Imprimir el contenido del directorio
     print("Models path content:", os.listdir(models_path))
 
-    mimic_path = r'/root/.clearml/venvs-builds/3.11/task_repository/micmicmotion.git'
-
+    mimic_path = os.getcwd()
     return mimic_path
 
 task_clearml = Task.init(
