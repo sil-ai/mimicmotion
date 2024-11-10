@@ -4,5 +4,5 @@
 boto3
 python-dotenv
 PyAV
-huggingface-hub==0.13.4
+huggingface-hub==0.20.2
 diffusers==0.27.0
