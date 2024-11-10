@@ -35,10 +35,7 @@ token = os.getenv('HUGGINGFACE_TOKEN')
 
 def set_up_media_logging():
     logger = Logger.current_logger()
-    logger.set_default_upload_destination(
-        uri=f"s3://sil-mimicmotion",
-        access_key=aws_access_key_id,
-        secret_key=aws_secret_access_key)
+    logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
     return logger
 
 def get_clearml_paths():
