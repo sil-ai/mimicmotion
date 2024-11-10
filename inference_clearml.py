@@ -46,13 +46,14 @@ def get_clearml_paths():
     # Imprimir el contenido del directorio
     print("Models path content:", os.listdir(models_path))
 
-    mimic_path = os.getcwd()
+    mimic_path = r'/root/.clearml/venvs-builds/3.11/task_repository/micmicmotion.git'
 
     return mimic_path
 
 task_clearml = Task.init(
-            project_name="MimicMotion Project",
-            task_name="Inference v3"
+            project_name="MimicMotion",
+            task_type=Task.TaskTypes.inference,
+            task_name="Inferencev3"
             )
 
 aws_region = os.getenv('AWS_REGION')
@@ -72,8 +73,6 @@ task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 
 media_logger = set_up_media_logging()
 mimic_path = get_clearml_paths()
@@ -197,4 +196,6 @@ if __name__ == "__main__":
                if args.log_file is not None else f"{absolute_output_dir}{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
+
+
 
