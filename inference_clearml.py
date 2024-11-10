@@ -28,11 +28,17 @@ import yaml
 
 load_dotenv()
 
-print(os.getcwd())
+aws_region = os.getenv('AWS_REGION')
+aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+token = os.getenv('HUGGINGFACE_TOKEN')
 
 def set_up_media_logging():
     logger = Logger.current_logger()
-    logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
+    logger.set_default_upload_destination(
+        uri=f"s3://sil-mimicmotion",
+        access_key=aws_access_key_id,
+        secret_key=aws_secret_access_key)
     return logger
 
 def get_clearml_paths():
@@ -55,10 +61,7 @@ task_clearml = Task.init(
             task_name="Inferencev3"
             )
 
-aws_region = os.getenv('AWS_REGION')
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-token = os.getenv('HUGGINGFACE_TOKEN')
+
 task_clearml.set_base_docker(
                     docker_image="alejandroquinterosil/clearml-image:mimicmotion",
                     )
