@@ -54,7 +54,7 @@ def get_clearml_paths():
 
 task_clearml = Task.init(
             project_name="MimicMotion",
-            task_type=Task.TaskTypes.inference,
+#            task_type=Task.TaskTypes.inference,
             task_name="Inferencev3"
             )
 task_clearml.add_requirements("./requirements.txt")
