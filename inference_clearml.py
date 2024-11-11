@@ -57,12 +57,12 @@ task_clearml = Task.init(
             task_type=Task.TaskTypes.inference,
             task_name="Inferencev3"
             )
-
+task_clearml.add_requirements("./requirements.txt")
 
 task_clearml.set_base_docker(
                     docker_image="alejandroquinterosil/clearml-image:mimicmotion",
                     )
-task_clearml.add_requirements("./requirements.txt")
+
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
