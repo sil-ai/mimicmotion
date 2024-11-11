@@ -61,13 +61,9 @@ task_clearml.add_requirements("./requirements.txt")
 
 task_clearml.set_base_docker(
         docker_image="alejandroquinterosil/clearml-image:mimicmotion",
+        docker_arguments=["--env-file .env"],
                     )
-task_clearml.set_environment(
-    AWS_REGION=aws_region,
-    AWS_ACCESS_KEY_ID=aws_access_key_id,
-    AWS_SECRET_ACCESS_KEY=aws_secret_access_key,
-    HF_TOKEN=token
-)
+
 
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
