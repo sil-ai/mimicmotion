@@ -61,7 +61,7 @@ task_clearml.add_requirements("./requirements.txt")
 
 task_clearml.set_base_docker(
         docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-        docker_arguments=["--env-file .env"],
+        docker_arguments=["--env-file /home/aquintero/mimic-motion/MimicMotion/.env"]
                     )
 
 
