@@ -59,10 +59,17 @@ task_clearml = Task.init(
             )
 task_clearml.add_requirements("./requirements.txt")
 
+docker_arguments = [
+    aws_region,
+    aws_access_key_id,
+    aws_secret_access_key,
+    token
+]
+
 task_clearml.set_base_docker(
         docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-        docker_arguments=["--env-file /home/aquintero/mimic-motion/MimicMotion/.env"]
-                    )
+        docker_arguments=docker_arguments
+        )
 
 
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
