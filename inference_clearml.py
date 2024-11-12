@@ -68,7 +68,10 @@ docker_arguments = [
 
 task_clearml.set_base_docker(
         docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-        docker_arguments=docker_arguments
+        docker_arguments=[f"--env AWS_REGION={aws_region}",
+                        f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
+                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
+                        f"--env HF_TOKEN={token}"],
         )
 
 
