@@ -173,7 +173,7 @@ def main(args):
             local_path = f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
             f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
-            iteration=task.id
+            iteration=task.id,
             series="Inference"
         )
 
