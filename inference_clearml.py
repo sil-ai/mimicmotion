@@ -145,6 +145,7 @@ def main(args):
 
     infer_config = OmegaConf.load(args.inference_config)
     pipeline = create_pipeline(infer_config, device)
+    print(infer_config.test_case)
 
     for task in infer_config.test_case:
         ############################################## Pre-process data ##############################################
@@ -166,8 +167,10 @@ def main(args):
             fps=task.fps,
         )
 
-        media_logger.report_media(
-            media_path=f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
+        media_logger.report_media( # change to report_media
+            #media_path=f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
+            #f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
+            local_path = f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
             f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
             iteration=task.id

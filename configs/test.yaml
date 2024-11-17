@@ -6,7 +6,7 @@ ckpt_path: models/MimicMotion_1-1.pth
 
 test_case:
   - id: 1 # added to avoid error
-  - ref_video_path: assets/example_data/videos/pose1.mp4
+    ref_video_path: assets/example_data/videos/pose1.mp4
     ref_image_path: assets/example_data/images/demo1.jpg
     num_frames: 72
     resolution: 576
