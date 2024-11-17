@@ -174,6 +174,7 @@ def main(args):
             f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
             iteration=task.id
+            series="Inference"
         )
 
 def set_logger(log_file=None, log_level=logging.INFO):
