@@ -170,11 +170,11 @@ def main(args):
         media_logger.report_media( # change to report_media
             #media_path=f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
             #f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
-            local_path = f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
+            local_path = f"{args.output_dir}{os.path.basename(task.ref_video_path).split('.')[0]}" \
             f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
             iteration=task.id,
-            series="Inference"
+            series="Inference" # add series
         )
 
 def set_logger(log_file=None, log_level=logging.INFO):
