@@ -28,11 +28,6 @@ import yaml
 
 load_dotenv()
 
-aws_region = os.getenv('AWS_REGION')
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-token = os.getenv('HUGGINGFACE_TOKEN')
-
 def set_up_media_logging():
     logger = Logger.current_logger()
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
@@ -46,35 +41,21 @@ def get_clearml_paths():
         overwrite=True
     )
 
-    # Imprimir el contenido del directorio
-    print("Models path content:", os.listdir(models_path))
-
     mimic_path = os.getcwd()
     return mimic_path
 
 task_clearml = Task.init(
             project_name="MimicMotion",
-#            task_type=Task.TaskTypes.inference,
+           task_type=Task.TaskTypes.inference,
             task_name="Inferencev3"
             )
-task_clearml.add_requirements("./requirements.txt")
-
-docker_arguments = [
-    aws_region,
-    aws_access_key_id,
-    aws_secret_access_key,
-    token
-]
+#task_clearml.add_requirements("./requirements.txt")
 
 task_clearml.set_base_docker(
         docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-        docker_arguments=[f"--env AWS_REGION={aws_region}",
-                        f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
-                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
-                        f"--env HF_TOKEN={token}"],
         )
 
-
+task_clearml.set_system_tags(["allow_vault_secrets"])
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
@@ -160,18 +141,16 @@ def main(args):
             device, task
         )
         ################################### save results to output folder. ###########################################
+        save_path_pose = f"{args.output_dir}{os.path.basename(task.ref_video_path).split('.')[0]}" \
+        f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
         save_to_mp4(
             _video_frames,
-            f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
-            f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
+            save_path_pose,
             fps=task.fps,
         )
-
-        media_logger.report_media( # change to report_media
-            #media_path=f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
-            #f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
-            local_path = f"{args.output_dir}{os.path.basename(task.ref_video_path).split('.')[0]}" \
-            f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
+        base = os.getcwd()
+        media_logger.report_media(
+            local_path = os.path.join(base, save_path_pose),
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
             iteration=task.id,
             series="Inference" # add series
