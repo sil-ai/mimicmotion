@@ -28,8 +28,6 @@ import yaml
 
 load_dotenv()
 
-print(os.getcwd())
-
 def set_up_media_logging():
     logger = Logger.current_logger()
     logger.set_default_upload_destination(uri=f"s3://sil-mimicmotion")
@@ -39,41 +37,30 @@ def get_clearml_paths():
 
     dataset = Dataset.get(dataset_id="47cf215eb8e54f099b21cc2d17f3460d")
     models_path = dataset.get_mutable_local_copy(
-        target_folder="./",
+        target_folder="./models",
         overwrite=True
     )
 
-    # Imprimir el contenido del directorio
-    print("Models path content:", os.listdir(models_path))
-
-    print('This is a message.')
     mimic_path = os.getcwd()
-
     return mimic_path
 
-task_clearml = Task.init(project_name="MimicMotion", task_name="Inference v3")
-task_clearml.connect_configuration(
-    {"repository": "https://github.com/sil-ai/micmicmotion.git", "branch": "main"}
-)
-aws_region = os.getenv('AWS_REGION')
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-token = os.getenv('HUGGINGFACE_TOKEN')
+task_clearml = Task.init(
+            project_name="MimicMotion",
+           task_type=Task.TaskTypes.inference,
+            task_name="Inferencev3"
+            )
+#task_clearml.add_requirements("./requirements.txt")
+
 task_clearml.set_base_docker(
-                    docker_image="alejandroquinterosil/clearml-image:mimicmotion",
-                    docker_arguments=[
-                        f"--env AWS_REGION={aws_region}",
-                        f"--env AWS_ACCESS_KEY_ID={aws_access_key_id}",
-                        f"--env AWS_SECRET_ACCESS_KEY={aws_secret_access_key}",
-                        f"--env HF_TOKEN={token}"],
-                    )
+        docker_image="alejandroquinterosil/clearml-image:mimicmotion",
+        )
+
+task_clearml.set_system_tags(["allow_vault_secrets"])
 task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 
 media_logger = set_up_media_logging()
 mimic_path = get_clearml_paths()
@@ -139,6 +126,7 @@ def main(args):
 
     infer_config = OmegaConf.load(args.inference_config)
     pipeline = create_pipeline(infer_config, device)
+    print(infer_config.test_case)
 
     for task in infer_config.test_case:
         ############################################## Pre-process data ##############################################
@@ -153,18 +141,19 @@ def main(args):
             device, task
         )
         ################################### save results to output folder. ###########################################
+        save_path_pose = f"{args.output_dir}{os.path.basename(task.ref_video_path).split('.')[0]}" \
+        f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
         save_to_mp4(
             _video_frames,
-            f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
-            f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
+            save_path_pose,
             fps=task.fps,
         )
-
+        base = os.getcwd()
         media_logger.report_media(
-            media_path=f"{args.output_dir}/{os.path.basename(task.ref_video_path).split('.')[0]}" \
-            f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4",
+            local_path = os.path.join(base, save_path_pose),
             title=f"{os.path.basename(task.ref_video_path).split('.')[0]}",
-            iteration=task.id
+            iteration=task.id,
+            series="Inference" # add series
         )
 
 def set_logger(log_file=None, log_level=logging.INFO):
@@ -197,4 +186,6 @@ if __name__ == "__main__":
                if args.log_file is not None else f"{absolute_output_dir}{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
+
+
 

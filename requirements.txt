@@ -3,3 +3,7 @@
 # platform: linux-64
 boto3
 python-dotenv
+PyAV
+huggingface-hub==0.25.1
+diffusers==0.27.0
+imageio[ffmpeg]
