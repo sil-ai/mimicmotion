@@ -2,12 +2,17 @@ import os
 import argparse
 import logging
 import math
+import boto3
+import os
+import yaml
+import torch.jit
+
 from omegaconf import OmegaConf
 from datetime import datetime
 from pathlib import Path
 from clearml import Dataset, Task, Logger
 import numpy as np
-import torch.jit
+
 from torchvision.datasets.folder import pil_loader
 from torchvision.transforms.functional import pil_to_tensor, resize, center_crop
 from torchvision.transforms.functional import to_pil_image
@@ -23,10 +28,31 @@ from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 from dotenv import load_dotenv
-import yaml
 
 
 load_dotenv()
+
+def download_file_from_s3(bucket_name, s3_key, local_path):
+    s3 = boto3.client('s3')
+    os.makedirs(os.path.dirname(local_path), exist_ok=True)
+    print(f"Downloading {s3_key} from the bucket {bucket_name} to {local_path}")
+    s3.download_file(bucket_name, s3_key, local_path)
+    return local_path
+
+def update_yaml_file(yaml_path, local_video_path, local_image_path):
+    with open(yaml_path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    config['test_case'][0]['ref_video_path'] = local_video_path
+    config['test_case'][0]['ref_image_path'] = local_image_path
+
+    with open(yaml_path, 'w') as file:
+        yaml.dump(config, file, default_flow_style=False)
+
+    print(f"Updated YAML file: {yaml_path}")
+
+
+
 
 def set_up_media_logging():
     logger = Logger.current_logger()
@@ -166,26 +192,43 @@ def set_logger(log_file=None, log_level=logging.INFO):
     logger.addHandler(log_handler)
 
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--log_file", type=str, default=None)
-    parser.add_argument("--inference_config", type=str, default="configs/test.yaml") #ToDo
-    parser.add_argument("--output_dir", type=str, default="outputs/", help="path to output")
-    parser.add_argument("--no_use_float16",
-                        action="store_true",
-                        help="Whether use float16 to speed up inference",
-    )
+    parser.add_argument("--inference_config", type=str, default="configs/test.yaml", help="Path to the test.yaml configuration file")
+    parser.add_argument("--output_dir", type=str, default="outputs/", help="Path to output directory")
+    parser.add_argument("--no_use_float16", action="store_true", help="Whether to use float16 to speed up inference")
+    parser.add_argument("--s3_video_key", type=str, required=True, help="S3 key for the video file")
+    parser.add_argument("--s3_image_key", type=str, required=True, help="S3 key for the image file")
+    parser.add_argument("--bucket_name", type=str, required=True, help="Name of the S3 bucket")
     args = parser.parse_args()
+
+    print("Video Key:", args.s3_video_key)
+    print("Image Key:", args.s3_image_key)
+    print("Bucket Name:", args.bucket_name)
+
+    # Variables locales para rutas
+    local_video_path = "assets/example_data/videos/" + os.path.basename(args.s3_video_key)
+    local_image_path = "assets/example_data/images/" + os.path.basename(args.s3_image_key)
+
+    # Descargar archivos desde S3 usando argumentos
+    download_file_from_s3(args.bucket_name, args.s3_video_key, local_video_path)
+    download_file_from_s3(args.bucket_name, args.s3_image_key, local_image_path)
+
+    # Actualizar archivo YAML
+    yaml_path = args.inference_config
+    update_yaml_file(yaml_path, local_video_path, local_image_path)
+
+    # Configuración para el resto del script
     print("---------------------------------------------------------------")
     print("Args: ", args)
     print("---------------------------------------------------------------")
-    print(mimic_path)
     absolute_output_dir = mimic_path + "/" + args.output_dir
     Path(absolute_output_dir).mkdir(parents=False, exist_ok=True)
     set_logger(args.log_file \
                if args.log_file is not None else f"{absolute_output_dir}{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
-
 
 

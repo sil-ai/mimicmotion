@@ -7,3 +7,4 @@ PyAV
 huggingface-hub==0.25.1
 diffusers==0.27.0
 imageio[ffmpeg]
+boto3
