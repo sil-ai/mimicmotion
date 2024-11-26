@@ -199,9 +199,9 @@ if __name__ == "__main__":
     parser.add_argument("--inference_config", type=str, default="configs/test.yaml", help="Path to the test.yaml configuration file")
     parser.add_argument("--output_dir", type=str, default="outputs/", help="Path to output directory")
     parser.add_argument("--no_use_float16", action="store_true", help="Whether to use float16 to speed up inference")
-    parser.add_argument("--s3_video_key", type=str, required=True, help="S3 key for the video file")
-    parser.add_argument("--s3_image_key", type=str, required=True, help="S3 key for the image file")
-    parser.add_argument("--bucket_name", type=str, required=True, help="Name of the S3 bucket")
+    parser.add_argument("--s3_video_key", type=str, required=False, help="S3 key for the video file")
+    parser.add_argument("--s3_image_key", type=str, required=False, help="S3 key for the image file")
+    parser.add_argument("--bucket_name", type=str, required=False, help="Name of the S3 bucket")
     args = parser.parse_args()
 
     print("Video Key:", args.s3_video_key)
