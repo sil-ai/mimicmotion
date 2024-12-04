@@ -25,14 +25,13 @@ from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 # Aplicar parches
 patch_geglu_inplace()
 
-# Cargar variables de entorno
 load_dotenv()
 
-
-
-
 def download_file_from_s3(bucket_name, s3_key, local_path):
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3',
+            region_name='us-east-1',
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
     os.makedirs(os.path.dirname(local_path), exist_ok=True)
     logger.info(f"Downloading {s3_key} from the bucket {bucket_name} to {local_path}")
     s3.download_file(bucket_name, s3_key, local_path)
@@ -176,6 +175,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
     logger = logging.getLogger(__name__)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     media_logger = set_up_media_logging()
     mimic_path = get_clearml_paths()
 
@@ -190,6 +190,16 @@ if __name__ == "__main__":
     if not args.s3_video_key or not args.s3_image_key or not args.bucket_name:
         logger.error("Missing required arguments!")
         sys.exit(1)
+
+    local_video_path = "assets/example_data/videos/" + os.path.basename(args.s3_video_key)
+    local_image_path = "assets/example_data/images/" + os.path.basename(args.s3_image_key)
+
+    download_file_from_s3(args.bucket_name, args.s3_video_key, local_video_path)
+    download_file_from_s3(args.bucket_name, args.s3_image_key, local_image_path)
+
+    yaml_path = args.inference_config
+    update_yaml_file(yaml_path, local_video_path, local_image_path)
+
 
     print("---------------------------------------------------------------")
     print("Args: ", args)
