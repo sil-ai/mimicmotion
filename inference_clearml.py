@@ -170,7 +170,7 @@ if __name__ == "__main__":
     if task_clearml.is_main_task():
         task_clearml.set_base_docker(docker_image="alejandroquinterosil/clearml-image:mimicmotion")
         task_clearml.set_system_tags(["allow_vault_secrets"])
-        task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
+        task_clearml.execute_remotely(queue_name="production", exit_process=True)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
     logger = logging.getLogger(__name__)
