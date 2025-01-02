@@ -22,7 +22,6 @@ from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 
-# Aplicar parches
 patch_geglu_inplace()
 
 load_dotenv()
