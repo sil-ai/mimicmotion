@@ -337,7 +337,7 @@ class MimicMotionPipeline(DiffusionPipeline):
         height: int = 576,
         width: int = 1024,
         num_frames: Optional[int] = None,
-        tile_size: Optional[int] = 8,
+        tile_size: Optional[int] = 16,
         tile_overlap: Optional[int] = 4,
         num_inference_steps: int = 25,
         min_guidance_scale: float = 1.0,
@@ -540,7 +540,6 @@ class MimicMotionPipeline(DiffusionPipeline):
         self._num_timesteps = len(timesteps)
         tile_size = min(tile_size, num_frames)
 
-        # Calculate indices
         indices = [
             [0, *range(i + 1, min(i + tile_size, num_frames))]
             for i in range(0, num_frames - tile_size + 1, tile_size - tile_overlap)
