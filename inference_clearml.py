@@ -10,7 +10,6 @@ from omegaconf import OmegaConf
 from datetime import datetime
 from pathlib import Path
 from clearml import Dataset, Task, Logger
-from clearml.backend_api.session.client import APIClient
 import numpy as np
 from torchvision.datasets.folder import pil_loader
 from torchvision.transforms.functional import pil_to_tensor, resize, center_crop
