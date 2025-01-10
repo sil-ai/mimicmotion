@@ -23,7 +23,6 @@ from mimicmotion.utils.loader import create_pipeline
 from mimicmotion.utils.utils import save_to_mp4
 from mimicmotion.dwpose.preprocess import get_video_pose, get_image_pose
 
-# Aplicar parches
 patch_geglu_inplace()
 
 load_dotenv()
@@ -176,7 +175,7 @@ if __name__ == "__main__":
     if task_clearml.is_main_task():
         task_clearml.set_base_docker(docker_image="alejandroquinterosil/clearml-image:mimicmotion")
         task_clearml.set_system_tags(["allow_vault_secrets"])
-        task_clearml.execute_remotely(queue_name="jobs_urgent", exit_process=True)
+        task_clearml.execute_remotely(queue_name="production", exit_process=True)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
     logger = logging.getLogger(__name__)
@@ -215,3 +214,5 @@ if __name__ == "__main__":
                if args.log_file is not None else f"{absolute_output_dir}{datetime.now().strftime('%Y%m%d%H%M%S')}.log")
     main(args)
     logger.info(f"--- Finished ---")
+
+
