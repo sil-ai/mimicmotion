@@ -117,10 +117,10 @@ def main(args):
     pipeline = create_pipeline(infer_config, device)
 
     for task in infer_config.test_case:
-        print("Task FPS: ", str(task.fps))
+        logger.info(f"Task FPS: {str(task.fps)}")
         if args.fps != "None":
             task.fps = task.fps * (float(args.fps) / 30) # normalize frame rate, with original default being 30fps
-            print("Updated Task FPS: " + str(task.fps))
+            logger.info(f"Updated Task FPS: {str(task.fps)}")
         pose_pixels, image_pixels = preprocess(
             task.ref_video_path, task.ref_image_path,
             resolution=task.resolution, sample_stride=task.sample_stride
