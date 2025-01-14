@@ -117,10 +117,6 @@ def main(args):
     pipeline = create_pipeline(infer_config, device)
 
     for task in infer_config.test_case:
-        logger.info(f"Task FPS: {str(task.fps)}")
-        if args.fps != "None":
-            task.fps = task.fps * (float(args.fps) / 30) # normalize frame rate, with original default being 30fps
-            logger.info(f"Updated Task FPS: {str(task.fps)}")
         pose_pixels, image_pixels = preprocess(
             task.ref_video_path, task.ref_image_path,
             resolution=task.resolution, sample_stride=task.sample_stride
@@ -163,7 +159,6 @@ if __name__ == "__main__":
     parser.add_argument("--s3_video_key", type=str, required=True, help="S3 key for the video file")
     parser.add_argument("--s3_image_key", type=str, required=True, help="S3 key for the image file")
     parser.add_argument("--bucket_name", type=str, required=True, help="Name of the S3 bucket")
-    parser.add_argument("--fps", type=str, required=True, help="Input Video Frames per second")
 
     args = parser.parse_args()
     args_dict = vars(args)
@@ -189,7 +184,6 @@ if __name__ == "__main__":
     args.s3_video_key = params.get("s3_video_key", args.s3_video_key)
     args.s3_image_key = params.get("s3_image_key", args.s3_image_key)
     args.bucket_name = params.get("bucket_name", args.bucket_name)
-    args.fps = params.get("fps", args.fps)
 
     if not args.s3_video_key or not args.s3_image_key or not args.bucket_name:
         logger.error("Missing required arguments!")
