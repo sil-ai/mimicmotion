@@ -119,7 +119,7 @@ def main(args):
     for task in infer_config.test_case:
         print("Task FPS: ", str(task.fps))
         if args.fps != "None":
-            task.fps = int(task.fps * (float(args.fps) / 29.97))
+            task.fps = task.fps * (float(args.fps) / 30) # normalize frame rate, with original default being 30fps
             print("Updated Task FPS: " + str(task.fps))
         pose_pixels, image_pixels = preprocess(
             task.ref_video_path, task.ref_image_path,
