@@ -174,7 +174,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
     logger = logging.getLogger(__name__)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     media_logger = set_up_media_logging()
     mimic_path = get_clearml_paths()
 
@@ -198,7 +197,6 @@ if __name__ == "__main__":
 
     yaml_path = args.inference_config
     update_yaml_file(yaml_path, local_video_path, local_image_path)
-
 
     print("---------------------------------------------------------------")
     print("Args: ", args)

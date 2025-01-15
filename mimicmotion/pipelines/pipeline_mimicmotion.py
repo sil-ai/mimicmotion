@@ -538,10 +538,18 @@ class MimicMotionPipeline(DiffusionPipeline):
 
         # 8. Denoising loop
         self._num_timesteps = len(timesteps)
-        indices = [[0, *range(i + 1, min(i + tile_size, num_frames))] for i in
-                   range(0, num_frames - tile_size + 1, tile_size - tile_overlap)]
+        tile_size = min(tile_size, num_frames)
+
+        indices = [
+            [0, *range(i + 1, min(i + tile_size, num_frames))]
+            for i in range(0, num_frames - tile_size + 1, tile_size - tile_overlap)
+        ]
+        if not indices or indices == [[]]:
+            indices = [[i for i in range(num_frames)]]
+
         if indices[-1][-1] < num_frames - 1:
             indices.append([0, *range(num_frames - tile_size + 1, num_frames)])
+            print("Updated Indices: ", indices)
 
         self.pose_net.to(device)
         self.unet.to(device)
