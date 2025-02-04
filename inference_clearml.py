@@ -10,6 +10,7 @@ from omegaconf import OmegaConf
 from datetime import datetime
 from pathlib import Path
 from clearml import Dataset, Task, Logger
+from clearml.backend_api.session.client import APIClient
 import numpy as np
 from torchvision.datasets.folder import pil_loader
 from torchvision.transforms.functional import pil_to_tensor, resize, center_crop
@@ -169,12 +170,17 @@ if __name__ == "__main__":
     if task_clearml.is_main_task():
         task_clearml.set_base_docker(docker_image="alejandroquinterosil/clearml-image:mimicmotion")
         task_clearml.set_system_tags(["allow_vault_secrets"])
-        task_clearml.execute_remotely(queue_name="production", exit_process=True)
+        client = APIClient()
+        prod_queue_id = client.queues.get_all(name="production")[0].id
+        tasks = client.tasks.get_all(name="Inferencev3", status=["queued"])
+        if len([task.execution.queue for task in tasks if task.execution.queue==prod_queue_id]) < 2:
+            task_clearml.execute_remotely(queue_name="production", exit_process=True)
+        else:
+            task_clearml.execute_remotely(queue_name="jobs_backlog", exit_process=True)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s: [%(levelname)s] %(message)s")
     logger = logging.getLogger(__name__)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     media_logger = set_up_media_logging()
     mimic_path = get_clearml_paths()
 
@@ -198,7 +204,6 @@ if __name__ == "__main__":
 
     yaml_path = args.inference_config
     update_yaml_file(yaml_path, local_video_path, local_image_path)
-
 
     print("---------------------------------------------------------------")
     print("Args: ", args)
