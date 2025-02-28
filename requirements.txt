@@ -1,6 +1,7 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: linux-64
+av==12.0.0
 boto3
 python-dotenv
 PyAV
