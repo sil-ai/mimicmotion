@@ -27,7 +27,7 @@ build:
     - "matplotlib>=3.9" # 3.9.1
     - "onnxruntime>=1.18" # 1.18.1
     - "accelerate>=0.32" # 0.32.0
-    - "av>=12.2" # 12.2.0, https://github.com/continue-revolution/sd-webui-animatediff/issues/377
+    - "av==12.0.0" # 12.0.0, https://github.com/Tencent/MimicMotion/issues/105
     
   # commands run after the environment is setup
   run:
