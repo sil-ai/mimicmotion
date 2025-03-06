@@ -51,6 +51,7 @@ RUN pip install --index-url https://download.pytorch.org/whl/cu117 \
     torchvision==0.15.2
 
 RUN pip install \
+    matplotlib \
     diffusers==0.27.0 \
     transformers==4.32.1 \
     decord==0.6.0 \
