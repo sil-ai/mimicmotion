@@ -74,7 +74,7 @@ RUN git clone https://github.com/sil-ai/micmicmotion.git
 
 WORKDIR /Mimic-Motion
 
-COPY .
+COPY . .
 
 
 
