@@ -3,7 +3,7 @@ name: Build and Push ClearML Docker Image
 on:
   push:
     branches:
-      - main  # Se ejecutará en cada cambio en la rama "main"
+      - main
 
 jobs:
   build-and-push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4  # Descarga el código del repo
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
