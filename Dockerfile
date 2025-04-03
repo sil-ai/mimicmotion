@@ -57,7 +57,9 @@ RUN pip install \
     decord==0.6.0 \
     einops \
     omegaconf \
-    boto3 \
+    boto3==1.35.78 \
+    botocore==1.35.99 \
+    clearml==1.16.5 \
     PyAV \
     huggingface-hub==0.25.1 \
     imageio[ffmpeg] \
